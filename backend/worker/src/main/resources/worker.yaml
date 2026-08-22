@@ -1,0 +1,41 @@
+server:
+  port: 8610
+
+spring:
+  application:
+    name: worker
+  security:
+    oauth2:
+      client:
+        registration:
+          manager:
+            provider: keycloak
+            client-id: hostel-worker
+            client-secret: ${KEYCLOAK_WORKER_SECRET:worker-secret}
+            authorization-grant-type: client_credentials
+        provider:
+          keycloak:
+            # token-uri, а не issuer-uri: worker фоновый, ему не нужен discovery
+            # на старте — иначе он не поднимется, пока Keycloak не готов
+            token-uri: ${KEYCLOAK_TOKEN_URI:http://localhost:8180/realms/hostel/protocol/openid-connect/token}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+
+camunda:
+  bpm:
+    client:
+      base-url: http://localhost:8080/engine-rest
+      async-response-timeout: 10000
+      lock-duration: 10000
+
+manager:
+  url: http://localhost:8710

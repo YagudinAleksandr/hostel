@@ -1,0 +1,97 @@
+{
+  "realm": "hostel",
+  "enabled": true,
+  "displayName": "Hostel",
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "accessTokenLifespan": 900,
+  "roles": {
+    "realm": [
+      {
+        "name": "hostel-admin",
+        "description": "Полный доступ"
+      },
+      {
+        "name": "hostel-user",
+        "description": "Обычный пользователь"
+      },
+      {
+        "name": "hostel-service",
+        "description": "Межсервисный доступ (service account)"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "hostel-web",
+      "name": "Hostel frontend",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "http://localhost:*",
+        "http://127.0.0.1:*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "protocol": "openid-connect"
+    },
+    {
+      "clientId": "hostel-worker",
+      "name": "Hostel worker (service account)",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "worker-secret",
+      "standardFlowEnabled": false,
+      "serviceAccountsEnabled": true,
+      "protocol": "openid-connect"
+    }
+  ],
+  "users": [
+    {
+      "username": "admin-user",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Админ",
+      "lastName": "Тестовый",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin-user",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "hostel-admin",
+        "hostel-user"
+      ]
+    },
+    {
+      "username": "plain-user",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Пользователь",
+      "lastName": "Тестовый",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "plain-user",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "hostel-user"
+      ]
+    },
+    {
+      "username": "service-account-hostel-worker",
+      "enabled": true,
+      "serviceAccountClientId": "hostel-worker",
+      "realmRoles": [
+        "hostel-service"
+      ]
+    }
+  ]
+}
