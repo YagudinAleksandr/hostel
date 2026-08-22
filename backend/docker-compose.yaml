@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: hostel
+      POSTGRES_USER: hostel
+      POSTGRES_PASSWORD: hostel
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hostel -d hostel"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  camunda:
+    image: camunda/camunda-bpm-platform:7.22.0
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres-data:
