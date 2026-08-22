@@ -1,0 +1,48 @@
+[versions]
+openapi-generator = "7.20.0"
+spring-boot = "4.0.3"
+spring-dependency-management = "1.1.7"
+spring-shell = "4.0.1"
+camunda = "7.24.0"
+spring-web = "7.0.5"
+jackson = "2.20.2"
+swagger-annotations = "2.2.22"
+jakarta-annotation = "3.0.0"
+jakarta-validation = "3.1.1"
+jakarta-xml-bind = "4.0.2"
+jsr305 = "3.0.2"
+junit-jupiter = "6.0.3"
+
+[libraries]
+spring-web = { module = "org.springframework:spring-web", version.ref = "spring-web" }
+spring-context = { module = "org.springframework:spring-context", version.ref = "spring-web" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+swagger-annotations = { module = "io.swagger.core.v3:swagger-annotations", version.ref = "swagger-annotations" }
+jakarta-annotation-api = { module = "jakarta.annotation:jakarta.annotation-api", version.ref = "jakarta-annotation" }
+jakarta-validation-api = { module = "jakarta.validation:jakarta.validation-api", version.ref = "jakarta-validation" }
+jakarta-xml-bind-api = { module = "jakarta.xml.bind:jakarta.xml.bind-api", version.ref = "jakarta-xml-bind" }
+jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+camunda-engine-rest-client = { module = "org.camunda.community:camunda-engine-rest-client-openapi-java", version.ref = "camunda" }
+camunda-external-task-client = { module = "org.camunda.bpm:camunda-external-task-client", version.ref = "camunda" }
+camunda-external-task-client-spring-boot = { module = "org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-external-task-client", version.ref = "camunda" }
+spring-shell-starter = { module = "org.springframework.shell:spring-shell-starter", version.ref = "spring-shell" }
+spring-shell-starter-test = { module = "org.springframework.shell:spring-shell-starter-test", version.ref = "spring-shell" }
+
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+liquibase-core = { module = "org.liquibase:liquibase-core" }
+spring-boot-liquibase = { module = "org.springframework.boot:spring-boot-liquibase" }
+lombok = { module = "org.projectlombok:lombok" }
+postgresql = { module = "org.postgresql:postgresql" }
+h2 = { module = "com.h2database:h2" }
+
+[plugins]
+openapi-generator = { id = "org.openapi.generator", version.ref = "openapi-generator" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
