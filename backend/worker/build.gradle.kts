@@ -10,6 +10,7 @@ dependencies {
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.validation)
+    implementation(libs.spring.boot.starter.oauth2.client)
     implementation(libs.camunda.external.task.client.spring.boot)
     implementation(libs.camunda.engine.rest.client)
 
@@ -23,3 +24,4 @@ dependencies {
 tasks.jar {
     enabled = false
 }
+
