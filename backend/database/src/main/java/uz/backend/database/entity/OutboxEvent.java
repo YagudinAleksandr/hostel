@@ -11,6 +11,8 @@ import java.util.UUID;
 
 /**
  * Внешние события
+ *
+ * @author Aleksandr Yagudin
  */
 @Getter
 @Setter
