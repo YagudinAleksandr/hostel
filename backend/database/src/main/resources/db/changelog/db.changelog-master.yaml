@@ -5,3 +5,7 @@ databaseChangeLog:
       file: db/changelog/changes/002-entrance.yaml
   - include:
       file: db/changelog/changes/003-floor.yaml
+  - include:
+      file: db/changelog/changes/004-outbox-event.yaml
+  - include:
+      file: db/changelog/changes/005-processed-event.yaml
