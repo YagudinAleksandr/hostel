@@ -52,7 +52,17 @@ public class Dormitory implements EntityBase<Long> {
     @OneToMany(mappedBy = "dormitory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Entrance> entrances = new ArrayList<>();
 
-    public Dormitory() {
+    /**
+     * Только для Hibernate: восстановление объекта из базы.
+     */
+    protected Dormitory() {
+    }
+
+    /**
+     * @param name    название общежития
+     * @param address адрес
+     */
+    public Dormitory(String name, Address address) {
         this.name = requireName(name);
         this.address = Objects.requireNonNull(address, "Адрес обязателен");
     }

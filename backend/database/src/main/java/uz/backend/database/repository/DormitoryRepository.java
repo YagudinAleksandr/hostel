@@ -18,6 +18,6 @@ public interface DormitoryRepository extends JpaRepository<Dormitory, Long> {
      * @param id идентификатор
      * @return Общежитие {@link Dormitory}
      */
-    @EntityGraph(attributePaths = {"entrance", "entrance.floors"})
+    @EntityGraph(attributePaths = {"entrances", "entrances.floors"})
     Optional<Dormitory> findWithStructureById(Long id);
 }
