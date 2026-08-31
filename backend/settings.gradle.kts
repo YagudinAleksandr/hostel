@@ -10,3 +10,4 @@ dependencyResolutionManagement {
 include("common")
 include("manager")
 include("worker")
+include("database")
