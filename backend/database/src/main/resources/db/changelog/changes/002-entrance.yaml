@@ -28,9 +28,9 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: number
-                  type: INT
-                  remarks: Номер подъезда, уникален в пределах общежития
+                  name: name
+                  type: VARCHAR(30)
+                  remarks: Название подъезда, уникально в пределах общежития
                   constraints:
                     nullable: false
 
@@ -44,5 +44,5 @@ databaseChangeLog:
 
         - addUniqueConstraint:
             tableName: entrance
-            columnNames: dormitory_id, number
-            constraintName: ux_entrance_dormitory_number
+            columnNames: dormitory_id, name
+            constraintName: ux_entrance_dormitory_name

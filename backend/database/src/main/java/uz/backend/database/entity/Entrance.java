@@ -19,11 +19,12 @@ import java.util.Optional;
  */
 @Getter
 @Setter
+@Entity
 @Table(
         name = "entrance",
         uniqueConstraints = @UniqueConstraint(
-                name = "ux_entrance_dormitory_number",
-                columnNames = {"dormitory_id", "number"}))
+                name = "ux_entrance_dormitory_name",
+                columnNames = {"dormitory_id", "name"}))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Entrance implements EntityBase<Long> {
     /**

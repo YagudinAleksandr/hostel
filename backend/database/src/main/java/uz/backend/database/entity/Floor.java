@@ -16,7 +16,7 @@ import org.hibernate.Hibernate;
 @Setter
 @Entity
 @Table(name = "floor",
-        uniqueConstraints = @UniqueConstraint(name = "ux_floor_entrance_number",
+        uniqueConstraints = @UniqueConstraint(name = "ux_floor_entrance_name",
                 columnNames = {"entrance_id", "name"}))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Floor implements EntityBase<Long> {
