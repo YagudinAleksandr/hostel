@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-entrance
+      author: hostel
+      comment: Подъезд — сущность внутри агрегата «Общежитие»
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: entrance
+      changes:
+        - createTable:
+            tableName: entrance
+            remarks: Подъезд общежития
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_entrance
+                    nullable: false
+              - column:
+                  name: dormitory_id
+                  type: BIGINT
+                  remarks: Владелец агрегата
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  type: INT
+                  remarks: Номер подъезда, уникален в пределах общежития
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_entrance_dormitory
+            baseTableName: entrance
+            baseColumnNames: dormitory_id
+            referencedTableName: dormitory
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            tableName: entrance
+            columnNames: dormitory_id, number
+            constraintName: ux_entrance_dormitory_number

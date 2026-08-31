@@ -1,0 +1,66 @@
+databaseChangeLog:
+  - property:
+      name: json.type
+      value: jsonb
+      dbms: postgresql
+  - property:
+      name: json.type
+      value: json
+      dbms: h2
+
+  - changeSet:
+      id: 001-dormitory
+      author: hostel
+      comment: Общежитие — корень агрегата, адрес хранится документом
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: dormitory
+      changes:
+        - createTable:
+            tableName: dormitory
+            remarks: Общежитие
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_dormitory
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  remarks: Наименование общежития
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address
+                  type: ${json.type}
+                  remarks: Адрес, структура задана uz.backend.common.vo.Address
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: BIGINT
+                  remarks: Версия для оптимистичной блокировки агрегата
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 002-dormitory-address-index
+      author: hostel
+      comment: Индекс для поиска по полям адреса, только PostgreSQL
+      preConditions:
+        - onFail: MARK_RAN
+        - dbms:
+            type: postgresql
+      changes:
+        - sql:
+            sql: CREATE INDEX ix_dormitory_address ON dormitory USING GIN (address jsonb_path_ops)
+      rollback:
+        - sql:
+            sql: DROP INDEX IF EXISTS ix_dormitory_address
