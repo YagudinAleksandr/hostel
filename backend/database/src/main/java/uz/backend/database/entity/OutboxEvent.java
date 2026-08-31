@@ -2,6 +2,8 @@ package uz.backend.database.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.Setter;
 import uz.backend.common.enums.DLQStatusType;
 import uz.backend.common.enums.EventType;
@@ -48,18 +50,20 @@ public class OutboxEvent implements EntityBase<UUID> {
     /**
      * Тело события
      */
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     @Column(name = "payload", nullable = false, updatable = false)
     private String payload;
 
     /**
      * Количество попыток
      */
-    @Column(name = "send_attempts", nullable = false, columnDefinition = "1")
+    @Column(name = "send_attempts", nullable = false)
     private int sendAttempts;
 
     /**
      * Последняя ошибка
      */
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     @Column(name = "last_error")
     private String lastError;
 
