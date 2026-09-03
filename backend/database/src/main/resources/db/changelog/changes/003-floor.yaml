@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-floor
+      author: hostel
+      comment: Этаж — лист агрегата «Общежитие»
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: floor
+      changes:
+        - createTable:
+            tableName: floor
+            remarks: Этаж подъезда
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_floor
+                    nullable: false
+              - column:
+                  name: entrance_id
+                  type: BIGINT
+                  remarks: Подъезд, которому принадлежит этаж
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(30)
+                  remarks: Название этажа, уникально в пределах подъезда
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_floor_entrance
+            baseTableName: floor
+            baseColumnNames: entrance_id
+            referencedTableName: entrance
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            tableName: floor
+            columnNames: entrance_id, name
+            constraintName: ux_floor_entrance_name

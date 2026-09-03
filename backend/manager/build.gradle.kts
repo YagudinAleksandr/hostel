@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     implementation(project(":common"))
+    implementation(project(":database"))
 
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.websocket)
