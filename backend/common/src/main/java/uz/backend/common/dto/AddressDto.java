@@ -8,7 +8,7 @@ import uz.backend.common.enums.Countries;
 /**
  * Адрес
  *
- * @param zipCode   почтовый индекс
+ * @param zip       почтовый индекс
  * @param country   страна {@link Countries}
  * @param region    регион/область
  * @param city      город/населенный пункт
@@ -19,7 +19,7 @@ import uz.backend.common.enums.Countries;
  */
 public record AddressDto(
         @Size(max = 20)
-        String zipCode,
+        String zip,
 
         @NotNull(message = "Страна обязательна")
         Countries country,
