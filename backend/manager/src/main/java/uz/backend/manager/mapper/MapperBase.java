@@ -18,14 +18,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
- * Маппер сущностей в DTO по совпадению имён.
+ * Маппер объектов по совпадению имён.
  * <p>
  * Читает свойства источника (record-компоненты или геттеры) и передаёт их в конструктор
- * целевого DTO, сопоставляя по имени параметра. План маппинга строится один раз на пару
+ * целевого типа, сопоставляя по имени параметра. План маппинга строится один раз на пару
  * типов и кэшируется.
  * <p>
- * Работает только в сторону "сущность -&gt; DTO". Создание и изменение сущностей идёт
- * через доменные методы агрегатов, а не через маппер.
+ * Годится для любой пары типов, у которой у цели есть публичный конструктор: сущность в DTO,
+ * DTO в значимый объект. Сущности через маппер не собираются: их создают и меняют
+ * доменные методы агрегатов.
  *
  * @author Aleksandr Yagudin
  */
@@ -60,23 +61,23 @@ public class MapperBase {
     private final Map<TypePair, Function<Object, Object>> converters = new ConcurrentHashMap<>();
 
     /**
-     * Конвертация объекта в DTO
+     * Конвертация объекта в объект другого типа
      *
-     * @param source  источник
-     * @param dtoType тип Data Transfer Object
-     * @param <D>     тип Data Transfer Object
-     * @return Data Transfer Object или {@code null}, если источник пуст
+     * @param source     источник
+     * @param targetType тип цели
+     * @param <T>        тип цели
+     * @return объект целевого типа или {@code null}, если источник пуст
      */
-    public <D> D toDto(Object source, Class<D> dtoType) {
+    public <T> T map(Object source, Class<T> targetType) {
         if (source == null) {
             return null;
         }
 
-        TypePair pair = new TypePair(source.getClass(), dtoType);
+        TypePair pair = new TypePair(source.getClass(), targetType);
 
         Function<Object, Object> converter = converters.get(pair);
         if (converter != null) {
-            return dtoType.cast(converter.apply(source));
+            return targetType.cast(converter.apply(source));
         }
 
         Plan plan = plans.computeIfAbsent(pair, this::buildPlan);
@@ -88,10 +89,22 @@ public class MapperBase {
         }
 
         try {
-            return dtoType.cast(plan.constructor().newInstance(arguments));
+            return targetType.cast(plan.constructor().newInstance(arguments));
         } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException("Не удалось создать " + dtoType.getName(), e);
+            throw new IllegalStateException("Не удалось создать " + targetType.getName(), e);
         }
+    }
+
+    /**
+     * Конвертация объекта в DTO
+     *
+     * @param source  источник
+     * @param dtoType тип Data Transfer Object
+     * @param <D>     тип Data Transfer Object
+     * @return Data Transfer Object или {@code null}, если источник пуст
+     */
+    public <D> D toDto(Object source, Class<D> dtoType) {
+        return map(source, dtoType);
     }
 
     /**
@@ -115,7 +128,7 @@ public class MapperBase {
 
     /**
      * Регистрация ручного конвертера для пары типов. Нужна там, где имена свойств
-     * не совпадают, например {@code Address.zip} и {@code AddressDto.zipCode}.
+     * не совпадают или значение нельзя получить простым чтением геттера.
      *
      * @param sourceType тип источника
      * @param targetType тип цели
@@ -258,7 +271,7 @@ public class MapperBase {
             return converter.apply(value);
         }
 
-        return toDto(value, targetType);
+        return map(value, targetType);
     }
 
     /**
