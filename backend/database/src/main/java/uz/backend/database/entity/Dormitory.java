@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import uz.backend.common.enums.LicenseType;
+import uz.backend.common.enums.ResponsibilityType;
 import uz.backend.common.vo.Address;
 
 import java.util.*;
@@ -51,6 +53,12 @@ public class Dormitory implements EntityBase<Long> {
      */
     @OneToMany(mappedBy = "dormitory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Entrance> entrances = new ArrayList<>();
+
+    /**
+     * Ответсвенный
+     */
+    @OneToMany(mappedBy = "dormitory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Responsible> responsibles = new LinkedHashSet<>();
 
     /**
      * Только для Hibernate: восстановление объекта из базы.
@@ -140,6 +148,53 @@ public class Dormitory implements EntityBase<Long> {
      */
     public List<Entrance> getEntrances() {
         return Collections.unmodifiableList(entrances);
+    }
+
+    /**
+     * Назначить менеджера ответственным
+     *
+     * @param managerId     идентификатор менеджера
+     * @param licenseType   тип лицензии на момент назначения
+     * @param licenseNumber номер лицензии на момент назначения
+     * @param role          роль ответственного
+     * @return назначение
+     */
+    public Responsible assign(Long managerId, LicenseType licenseType,
+                              String licenseNumber, ResponsibilityType role) {
+        Objects.requireNonNull(managerId, "Менеджер обязателен");
+        Objects.requireNonNull(role, "Роль обязательна");
+
+        if (responsibles.stream().anyMatch(r -> managerId.equals(r.getManagerId()))) {
+            throw new IllegalStateException("Менеджер уже назначен ответственным");
+        }
+        if (role == ResponsibilityType.MAIN
+                && responsibles.stream().anyMatch(r -> r.getRole() == ResponsibilityType.MAIN)) {
+            throw new IllegalStateException("Главный ответственный уже назначен");
+        }
+
+        Responsible responsible = new Responsible(this, managerId, licenseType, licenseNumber, role);
+        responsibles.add(responsible);
+        return responsible;
+    }
+
+    /**
+     * Снять менеджера с ответственности
+     *
+     * @param managerId идентификатор менеджера
+     */
+    public void unassign(Long managerId) {
+        if (!responsibles.removeIf(r -> managerId.equals(r.getManagerId()))) {
+            throw new IllegalArgumentException("Менеджер " + managerId + " не назначен ответственным");
+        }
+    }
+
+    /**
+     * Получить ответственного
+     *
+     * @return ответственный {@link Responsible}
+     */
+    public Set<Responsible> getResponsibles() {
+        return Collections.unmodifiableSet(responsibles);
     }
 
     /**
