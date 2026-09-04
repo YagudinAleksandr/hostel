@@ -1,0 +1,102 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009-dormitory-responsible
+      author: hostel
+      comment: Назначение ответственного — сущность внутри агрегата «Общежитие»
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: dormitory_responsible
+      changes:
+        - createTable:
+            tableName: dormitory_responsible
+            remarks: Ответственный за общежитие
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_dormitory_responsible
+                    nullable: false
+              - column:
+                  name: dormitory_id
+                  type: BIGINT
+                  remarks: Владелец агрегата
+                  constraints:
+                    nullable: false
+              - column:
+                  name: manager_id
+                  type: BIGINT
+                  remarks: Ссылка на корень агрегата «Менеджер»
+                  constraints:
+                    nullable: false
+              - column:
+                  name: license_type
+                  type: VARCHAR(30)
+                  remarks: Тип лицензии на момент назначения
+                  constraints:
+                    nullable: false
+              - column:
+                  name: license_number
+                  type: VARCHAR(50)
+                  remarks: Номер лицензии на момент назначения
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: VARCHAR(30)
+                  remarks: Роль ответственного
+                  constraints:
+                    nullable: false
+              - column:
+                  name: assigned_at
+                  type: TIMESTAMP
+                  remarks: Дата назначения
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_dormitory_responsible_dormitory
+            baseTableName: dormitory_responsible
+            baseColumnNames: dormitory_id
+            referencedTableName: dormitory
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            constraintName: fk_dormitory_responsible_manager
+            baseTableName: dormitory_responsible
+            baseColumnNames: manager_id
+            referencedTableName: manager
+            referencedColumnNames: id
+            onDelete: RESTRICT
+
+        - addUniqueConstraint:
+            tableName: dormitory_responsible
+            columnNames: dormitory_id, manager_id
+            constraintName: ux_dormitory_responsible_manager
+
+        - createIndex:
+            tableName: dormitory_responsible
+            indexName: ix_dormitory_responsible_manager
+            columns:
+              - column:
+                  name: manager_id
+
+  - changeSet:
+      id: 010-dormitory-responsible-main-unique
+      author: hostel
+      comment: Не более одного главного ответственного на общежитие
+      dbms: postgresql
+      changes:
+        - sql:
+            sql: >-
+              CREATE UNIQUE INDEX ux_dormitory_responsible_main
+              ON dormitory_responsible (dormitory_id)
+              WHERE role = 'MAIN'
+      rollback:
+        - sql:
+            sql: DROP INDEX IF EXISTS ux_dormitory_responsible_main

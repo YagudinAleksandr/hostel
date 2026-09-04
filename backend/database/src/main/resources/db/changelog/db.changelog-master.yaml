@@ -9,3 +9,9 @@ databaseChangeLog:
       file: db/changelog/changes/004-outbox-event.yaml
   - include:
       file: db/changelog/changes/005-processed-event.yaml
+  - include:
+      file: db/changelog/changes/006-manager.yaml
+  - include:
+      file: db/changelog/changes/007-license.yaml
+  - include:
+      file: db/changelog/changes/008-dormitory-responsible.yaml
