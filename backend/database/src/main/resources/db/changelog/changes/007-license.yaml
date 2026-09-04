@@ -1,0 +1,77 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-license
+      author: hostel
+      comment: Лицензия — сущность внутри агрегата «Менеджер»
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: license
+      changes:
+        - createTable:
+            tableName: license
+            remarks: Лицензия менеджера
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_license
+                    nullable: false
+              - column:
+                  name: manager_id
+                  type: BIGINT
+                  remarks: Владелец агрегата
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR(30)
+                  remarks: Тип лицензии
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  type: VARCHAR(50)
+                  remarks: Номер лицензии
+                  constraints:
+                    nullable: false
+              - column:
+                  name: issued_at
+                  type: DATE
+                  remarks: Дата выдачи
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expires_at
+                  type: DATE
+                  remarks: Дата окончания, NULL — бессрочная
+              - column:
+                  name: revoked_at
+                  type: DATE
+                  remarks: Дата отзыва, NULL — не отозвана
+
+        - addForeignKeyConstraint:
+            constraintName: fk_license_manager
+            baseTableName: license
+            baseColumnNames: manager_id
+            referencedTableName: manager
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            tableName: license
+            columnNames: number
+            constraintName: ux_license_number
+
+        - createIndex:
+            tableName: license
+            indexName: ix_license_manager_type
+            columns:
+              - column:
+                  name: manager_id
+              - column:
+                  name: type

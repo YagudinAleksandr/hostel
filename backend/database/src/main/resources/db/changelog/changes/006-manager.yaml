@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-manager
+      author: hostel
+      comment: Менеджер — корень агрегата
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: manager
+      changes:
+        - createTable:
+            tableName: manager
+            remarks: Менеджер
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_manager
+                    nullable: false
+              - column:
+                  name: full_name
+                  type: VARCHAR(255)
+                  remarks: ФИО менеджера
+                  constraints:
+                    nullable: false
+              - column:
+                  name: job_title
+                  type: VARCHAR(255)
+                  remarks: Должность
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: VARCHAR(255)
+                  remarks: Телефон
+              - column:
+                  name: version
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  remarks: Версия для оптимистической блокировки
+                  constraints:
+                    nullable: false
