@@ -56,9 +56,10 @@ public class Manager implements EntityBase<Long> {
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<License> licenses = new LinkedHashSet<>();
 
-    public Manager(String fullName, String phone) {
+    public Manager(String fullName, String phone, String jobTitle) {
         this.fullName = requireFullName(fullName);
         this.phone = phone;
+        this.jobTitle = jobTitle;
     }
 
     /**
@@ -122,6 +123,15 @@ public class Manager implements EntityBase<Long> {
      */
     public void rename(String fullName) {
         this.fullName = requireFullName(fullName);
+    }
+
+    /**
+     * Смена места работы
+     *
+     * @param jobTitle новое название места работы
+     */
+    public void changeJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
     }
 
     /**
